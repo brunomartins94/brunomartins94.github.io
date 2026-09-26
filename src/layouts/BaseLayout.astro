@@ -1,0 +1,36 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a1222" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="/" aria-label="Bruno Martins, início"><span class="brand-mark">BM</span><span>Bruno Martins</span></a>
+        <nav aria-label="Navegação principal"><a href="/">Início</a><a href="/notas/">Notas técnicas</a><a href="https://github.com/brunomartins94">GitHub ↗</a></nav>
+      </div>
+    </header>
+    <main id="conteudo"><slot /></main>
+    <footer class="site-footer"><div class="container"><span>© {new Date().getFullYear()} Bruno Martins</span><a href="mailto:contato.brunomartinsc@gmail.com">Contato</a></div></footer>
+  </body>
+</html>
