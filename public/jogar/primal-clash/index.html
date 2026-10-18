@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Jogue Primal Clash, de Bruno Martins: estratégia em tempo real com dinossauros, cinco fases, dificuldades e progresso salvo no navegador.">
+  <meta name="theme-color" content="#080e1e">
+  <title>Jogar Primal Clash · Bruno Martins</title>
+  <link rel="stylesheet" href="player.css">
+  <script src="player.js" defer></script>
+</head>
+<body>
+  <header class="player-bar">
+    <a href="../../jogos/">← Voltar aos jogos</a>
+    <h1>Primal Clash <span>Estratégia · Cinco fases</span></h1>
+    <button id="fullscreen" type="button">Tela cheia</button>
+  </header>
+  <main id="player">
+    <iframe id="game-frame" src="play/index.html" title="Jogar Primal Clash: escolha sua dificuldade e inicie a campanha" allow="fullscreen" allowfullscreen></iframe>
+  </main>
+  <footer>
+    <p>Clique ou toque para recrutar tropas · Teclas 1, 2 e 3 para recrutar · Espaço para pausar · Progresso salvo neste navegador.</p>
+    <a href="play/index.html">Abrir jogo diretamente ↗</a>
+    <span id="player-status" role="status"></span>
+  </footer>
+</body>
+</html>
