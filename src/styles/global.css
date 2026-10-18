@@ -8,3 +8,5 @@
 .site-footer { padding:1.5rem 0; border-top:1px solid var(--line); color:var(--muted); font:.72rem var(--mono); } .site-footer .container { display:flex; justify-content:space-between; gap:1rem; } .site-footer a { color:var(--primary); text-decoration:none; }
 @media (max-width:720px) { .container,.narrow { width:min(100% - 32px,1120px); } .nav-wrap { min-height:64px; } nav { gap:.85rem; } nav a { font-size:.75rem; } .hero-grid,.game-showcase { grid-template-columns:1fr; gap:2rem; } .hero-card { max-width:500px; } .article-card { grid-template-columns:1fr; gap:1rem; } .article-index { order:-1; } .site-footer .container { flex-direction:column; } }
 @media (max-width:420px) { nav a:nth-child(2) { display:none; } h1 { font-size:2.7rem; } }
+
+.area-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.area-grid h2{font-size:1.5rem}.area-grid p:not(.eyebrow){color:var(--muted)}.game-play{margin:0 1rem 1rem 0}@media(max-width:850px){.area-grid{grid-template-columns:1fr}}

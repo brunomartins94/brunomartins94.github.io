@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080e1e">
+  <title>Orbital.io — Jardim Cósmico</title>
+  <style>
+    /* Pixel art no mundo, interface legível e sem dependências de fontes. */
+    :root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;color:#eaf3ff;background:#080e1e}
+    *{box-sizing:border-box}body{margin:0;width:100vw;height:100vh;height:100dvh;overflow:hidden}
+    canvas{display:block;width:100%;height:100%;touch-action:none;image-rendering:pixelated}
+    .panel{background:#101a2ce8;border:1px solid #26364c;border-radius:18px;backdrop-filter:blur(12px)}
+    .brand{position:absolute;top:26px;left:28px;pointer-events:none}.brand strong{font-size:24px;letter-spacing:-1px}.brand span{color:#69e2c2}.eyebrow{font-size:10px;letter-spacing:3px;color:#8298b7;text-transform:uppercase;margin-top:7px}
+    #connection{font-size:12px;color:#a4b8d1;margin-top:12px}#connection::before{content:'●';color:#69e2c2;margin-right:7px}
+    .leaderboard{position:absolute;top:24px;right:24px;width:230px;padding:18px;pointer-events:none}.heading{display:flex;justify-content:space-between;font-size:11px;letter-spacing:1.6px;color:#90a5bf}.heading b{color:#69e2c2}
+    #leaders{padding:0;margin:15px 0 0;list-style:none}#leaders li{display:flex;gap:10px;align-items:center;font-size:13px;padding:9px 0;border-top:1px solid #253047}#leaders .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#leaders .rank{color:#69809e;font-size:11px}#leaders .self{color:#69e2c2}
+    .mass{position:absolute;bottom:26px;left:28px;padding:18px 24px;min-width:175px;pointer-events:none}.mass small{color:#91a4bd;letter-spacing:2px;font-size:10px}.mass strong{display:block;font-size:36px;font-weight:600;letter-spacing:-1px}.mass span{color:#69e2c2;font-size:11px}
+    .hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:#91a4bd;font-size:12px;text-align:center;pointer-events:none}kbd{display:inline-block;border:1px solid #42506b;border-radius:5px;padding:4px 8px;color:#e1e9f4;margin-right:5px}
+    .modal{position:absolute;inset:0;display:grid;place-items:center;background:#050b196b;padding:20px}.modal[hidden]{display:none}.card{width:min(430px,100%);padding:38px;text-align:center;box-shadow:0 28px 100px #0008}.orbit{font-size:50px;color:#69e2c2;line-height:1}h1{font-size:42px;letter-spacing:-2px;margin:16px 0 5px}h1 span{color:#69e2c2}p{color:#a3b4cb;line-height:1.7;font-size:14px}label{display:block;text-align:left;font-size:11px;color:#a3b4cb;margin:24px 0 8px;letter-spacing:1px}input,button{width:100%;font:inherit;border-radius:10px;padding:14px}input{background:#0a1222;border:1px solid #34445b;color:#fff;outline:none}input:focus{border-color:#69e2c2}button{border:0;background:#69e2c2;color:#08251f;font-weight:700;cursor:pointer;margin-top:13px}button:hover{background:#93f5da}button:disabled{opacity:.5;cursor:wait}.footnote{font-size:11px;color:#6f85a3;margin-top:20px}#deathDetail{margin:22px 0}
+    #touchBoost{position:absolute;right:24px;bottom:270px;width:auto;display:none;touch-action:none}
+    [hidden]{display:none!important}
+    .minimap{position:absolute;right:24px;bottom:24px;width:178px;padding:12px;pointer-events:none}
+    #minimap{width:152px;height:152px;margin-top:9px;border-radius:8px;background:#0b1426}
+    .minimap small{display:block;color:#89a2b7;font-size:9px;margin-top:7px}
+    #effects{position:absolute;left:28px;bottom:175px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+    .effect{border:1px solid #3e556d;background:#101a2cee;border-radius:12px;padding:10px 12px;font-size:12px;color:#a6e9df}
+    .power-guide{display:flex;justify-content:center;gap:12px;color:#b0c4d5;font-size:11px;margin-top:20px}
+    .power-guide span:nth-child(1){color:#c4b4f3}.power-guide span:nth-child(2){color:#99ded8}.power-guide span:nth-child(3){color:#f4c799}
+    .secondary{background:transparent;border:1px solid #465975;color:#bcc9dd}.secondary:hover{background:#1e2d43}
+    #adStatus{font-size:12px;min-height:18px;color:#c4b4f3;line-height:1.5;margin-top:12px}
+    @media(max-width:600px){.minimap{right:12px;bottom:16px;width:124px;padding:9px}#minimap{width:104px;height:104px}.minimap .heading{font-size:8px}.minimap small{font-size:8px}.hint{display:none}#effects{left:16px;bottom:150px;max-width:190px}.effect{padding:7px 9px;font-size:10px}#touchBoost{bottom:195px;right:12px}.brand .eyebrow{max-width:130px;line-height:1.7}}
+    @media(max-height:560px){.card{padding:16px;max-height:94vh;overflow:auto}.card h1{font-size:28px}.card .orbit{display:none}.card p{margin:6px}.card label{margin-top:10px}.card .footnote{margin-top:8px}.minimap{transform:scale(.75);transform-origin:bottom right}.leaderboard{padding:10px}#leaders li{padding:4px 0}}
+    @media(pointer:coarse){#touchBoost{display:block}.hint{display:none}}
+    @media(max-width:600px){.brand{top:18px;left:18px}.leaderboard{top:16px;right:12px;width:165px;padding:12px}.heading{font-size:9px}.mass{left:16px;bottom:16px;padding:12px 18px;min-width:130px}.hint{width:180px;left:auto;right:16px;transform:none;font-size:10px}.card{padding:28px}.brand strong{font-size:20px}}
+  </style>
+  <style>
+    :root{font-family:ui-monospace,Consolas,monospace}.panel{border-radius:5px;border-color:#32465d;box-shadow:4px 4px 0 #050b1680}
+    button,input{border-radius:3px}h1{letter-spacing:-2px}.card{width:min(500px,100%);max-height:calc(100dvh - 32px);overflow:auto;padding:26px 32px}.card h1{margin:10px 0 4px;font-size:36px}.card .orbit{font-size:30px}.card p{margin:10px 0}.card .footnote{margin-top:12px}.card label{margin-top:16px}.power-guide{flex-wrap:wrap;gap:8px 14px;margin-top:12px}.power-guide span:nth-child(4){color:#a8c9ff}
+    .skin-label{font-size:10px;letter-spacing:2px;color:#9bb0c8;margin:20px 0 10px;text-align:left}
+    #skins{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.skin-option{margin:0;padding:7px 3px;background:#0b1526;color:#aebed1;border:1px solid #30445e;font-size:10px;font-weight:400;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .skin-option canvas{width:40px;height:40px;pointer-events:none}.skin-option:hover{background:#22344b}.skin-option[aria-pressed=true]{border-color:#83e6c7;background:#1b3b39;color:#b5ffe8;box-shadow:inset 0 -3px #83e6c7}.skin-option:focus-visible{outline:2px solid #e6dab3;outline-offset:2px}
+    @media(max-width:520px){.card{padding:20px}.card .eyebrow{font-size:8px;letter-spacing:2px}#skins{grid-template-columns:repeat(3,1fr)}.skin-option{flex-direction:row;justify-content:center}.skin-option canvas{width:30px;height:30px}.skin-label{margin-top:14px}.card h1{font-size:30px}.brand strong{font-size:18px}.leaderboard{width:145px}.brand #connection{max-width:130px;font-size:10px}}
+  </style>
+<style>
+ #languagePanel{position:absolute;top:18px;left:24px;z-index:30;font-family:system-ui,sans-serif;font-size:13px;color:#e7edf7;max-width:calc(100vw - 32px)}
+ #selectedLanguage{list-style:none;display:flex;gap:10px;align-items:center;cursor:pointer;background:#111e30;border:1px solid #3e526d;padding:10px 12px;border-radius:4px;min-width:165px}#selectedLanguage::after{content:'▾';margin-left:auto;color:#82dfc4}#selectedLanguage::-webkit-details-marker{display:none}
+ #languageOptions{margin-top:6px;padding:7px;background:#101a2c;border:1px solid #3e526d;display:grid;grid-template-columns:1fr 1fr;gap:4px;width:360px;max-width:calc(100vw - 32px);max-height:60vh;overflow:auto;box-shadow:0 12px 40px #0009}
+ .language-option{display:flex;gap:9px;align-items:center;text-align:left;margin:0;padding:10px 8px;background:transparent;color:#c7d3e4;font-size:12px;font-weight:400}.language-option:hover,.language-option[aria-pressed=true]{background:#23413e;color:#abf2d7}.language-option img,#selectedLanguage img{flex-shrink:0;border-radius:1px}
+ .brand{top:78px}#powerIcons{display:flex;justify-content:center;gap:22px;margin:20px 0 6px}.power-icon canvas{width:24px;height:24px}.effect{display:flex;align-items:center;gap:8px}.effect canvas{width:20px;height:20px}.hint{max-width:360px;line-height:1.6}
+ @media(max-width:600px){#languagePanel{top:14px;left:14px}#selectedLanguage{min-width:140px;padding:9px;font-size:12px}.brand{top:72px}.card{max-height:calc(100dvh - 110px)}#menu{padding-top:80px}.mass{max-width:185px}.minimap{width:124px}}
+ </style><style>
+@font-face{font-family:OrbitalPixel;src:url('./fonts/Tiny5-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+:root{font-family:OrbitalPixel,system-ui,sans-serif;font-synthesis:none}#languagePanel{font-family:OrbitalPixel,system-ui,sans-serif;font-size:16px}
+button,input{font-family:inherit;font-size:18px;font-weight:400}.card h1{font-size:48px;letter-spacing:0}.brand strong{font-size:30px;letter-spacing:0}
+p{font-size:18px}.skin-option{font-size:15px}.skin-label,.card label,.heading,.mass small{font-size:14px;letter-spacing:1px}
+.eyebrow{font-size:12px;letter-spacing:2px}#connection,#leaders li,.language-option,#selectedLanguage{font-size:16px}.mass strong{font-size:44px}.mass span,.footnote,#adStatus,.effect{font-size:15px}.minimap small{font-size:12px}
+.control-guide{display:flex;gap:10px;width:auto;max-width:none;bottom:22px;left:50%;right:auto;transform:translateX(-50%)}
+.control-card{width:110px;height:58px;padding:5px;background:#101c2cdb;border:1px solid #344b63;box-shadow:3px 3px #060d18;border-radius:3px}.control-card svg{display:block;width:100%;height:100%}
+.mouse-press{animation:mouse-click 1.6s steps(2,end) infinite}@keyframes mouse-click{0%,100%{opacity:1}50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.mouse-press{animation:none}}
+@media(max-width:700px){.control-guide{bottom:155px}.control-card{width:86px;height:48px}.mass strong{font-size:36px}.brand strong{font-size:24px}.minimap small{font-size:10px}}
+@media(pointer:coarse){.control-guide{display:none}}
+select{width:100%;padding:12px;background:#0a1222;border:1px solid #34445b;color:#fff;font:inherit;font-size:18px}
+</style></head>
+<body>
+  <details id="languagePanel"><summary id="selectedLanguage"></summary><div id="languageOptions"></div></details>
+  <canvas id="game" aria-label="Arena single player Orbital.io"></canvas>
+  <div class="brand"><strong>orbital<span>.io</span></strong><div class="eyebrow">Jardim Cósmico</div><div id="connection" role="status">Conectando…</div></div>
+  <aside class="leaderboard panel"><div class="heading">TOP 5 <b id="online">0 EM ÓRBITA</b></div><ol id="leaders"></ol></aside>
+  <div class="mass panel"><small id="massLabel">SUA MASSA</small><strong id="mass">—</strong><span id="boostState">Explore. Absorva. Cresça.</span></div>
+  <div id="effects" aria-label="Power-ups ativos"></div>
+  <aside class="minimap panel"><div class="heading" id="mapLabel">MAPA ESTELAR</div><canvas id="minimap" width="304" height="304" aria-label="Minimapa: sua posição no mapa completo"></canvas><small id="mapHint">● Você · retângulo: visão atual</small></aside>
+  <div class="hint control-guide" id="hint">
+ <div class="control-card" id="moveControl" role="img">
+  <svg viewBox="0 0 100 48" aria-hidden="true" shape-rendering="crispEdges">
+   <path d="M15 11h14v3h3v24h-3v3H15v-3h-3V14h3z" fill="#132638" stroke="#bad0e2" stroke-width="2"/>
+   <path d="M22 12v13m-9 0h18" stroke="#bad0e2" stroke-width="2"/><path d="M21 16h2v5h-2z" fill="#69e2c2"/>
+   <path d="M18 5l4-4 4 4M18 45l4 3 4-3M6 21l-4 4 4 4M38 21l4 4-4 4" fill="none" stroke="#69e2c2" stroke-width="2"/>
+   <path d="M48 25h13m-4-4 4 4-4 4" fill="none" stroke="#6d859f" stroke-width="2"/>
+   <path d="M76 15h12v3h4v14h-4v3H76v-3h-4V18h4z" fill="#337c94"/><path d="M76 17h8v4h-5v5h-5v-7h2zm8 10h6v5h-6z" fill="#8de3ad"/>
+  </svg>
+ </div>
+ <div class="control-card" id="boostControl" role="img">
+  <svg viewBox="0 0 100 48" aria-hidden="true" shape-rendering="crispEdges">
+   <path d="M15 11h14v3h3v24h-3v3H15v-3h-3V14h3z" fill="#132638" stroke="#bad0e2" stroke-width="2"/>
+   <path class="mouse-press" d="M15 13h6v11h-7v-9h1z" fill="#69e2c2"/><path d="M22 12v13m-9 0h18" stroke="#bad0e2" stroke-width="2"/>
+   <path d="M16 3v5M6 8l4 4M5 17h5" stroke="#69e2c2" stroke-width="2"/>
+   <path d="M43 21l4 4-4 4m8-8 4 4-4 4" fill="none" stroke="#f4c799" stroke-width="2"/>
+   <path d="M61 22h9v3h-9zm-5 6h12v3H56z" fill="#b78b72"/><path d="M78 15h12v3h4v14h-4v3H78v-3h-4V18h4z" fill="#bb8051"/><path d="M78 17h10v4H76v-2h2zm-2 9h16v4H76z" fill="#f4d49c"/>
+  </svg>
+ </div>
+</div>
+  <button id="touchBoost" type="button">BOOST</button>
+  <section id="menu" class="modal"><form id="joinForm" class="card panel"><div class="orbit">◎</div><div class="eyebrow">Jardim Cósmico · Universo Pixel</div><h1>orbital<span>.io</span></h1><div class="skin-label" id="skinLabel">ESCOLHA SEU PLANETA</div><div id="skins" role="group" aria-labelledby="skinLabel"></div><div id="powerIcons"></div><label id="nicknameLabel" for="nickname">SEU NOME NA ARENA</label><input id="nickname" maxlength="18" value="Viajante" autocomplete="off"><label id="difficultyLabel" for="difficulty">DIFICULDADE DOS BOTS</label><select id="difficulty"><option value="easy" id="easyOption">Fácil</option><option value="normal" id="normalOption" selected>Normal</option><option value="hard" id="hardOption">Difícil</option></select><p id="soloInfo" class="footnote">Você e 9 bots · Todos começam com 0 pontos</p><button id="play" disabled>Entrar em órbita →</button></form></section>
+  <section id="gameOver" class="modal" hidden><div class="card panel"><div class="orbit">◌</div><div class="eyebrow" id="overEyebrow">Fim desta trajetória</div><h1 id="overTitle">Fora de órbita</h1><p id="deathDetail"></p><button id="revive" hidden>▷ Ver anúncio · segunda chance</button><p id="reviveInfo" class="footnote" hidden>Volte com 50% da massa (mínimo 25) e 3s de escudo.<br>Uma segunda chance por partida.</p><div id="adStatus" role="status" aria-live="polite"></div><button id="respawn" class="secondary">Nova órbita · Respawn →</button></div></section>
+  <script>
+    window.ORBITAL_CONFIG = { singlePlayer: true, rewardedAdsEnabled: false };
+  </script>
+  <script src="./i18n.js" defer></script>
+  <script src="./ui.js" defer></script>
+  <script src="./planet-art.js" defer></script>
+  <script src="./local-session.js" defer></script>
+  <script src="./game.js" defer></script>
+</body>
+</html>
+
