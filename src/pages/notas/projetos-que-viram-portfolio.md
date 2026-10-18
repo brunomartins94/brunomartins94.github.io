@@ -46,5 +46,5 @@ description: Um guia prático para documentar projetos de software, games e enge
 
   ## Próximo passo
 
-  A série de engenharia de dados começa com uma [ingestão de API para S3](/notas/api-s3-landing-zone/). Para desenvolvimento de games, a [vitrine de jogos](/jogos/) reúne os projetos. Cada frente segue com sua documentação, demonstrações e critérios de validação.
+  A série de engenharia de dados começa com uma [ingestão de API para S3](/notas/api-s3-landing-zone/). Para conhecer os games e jogar no navegador, visite o [site principal](https://brunomartins94.github.io/personal_site/). Cada frente segue com sua documentação, demonstrações e critérios de validação.
 </article>
